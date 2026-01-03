@@ -1,12 +1,22 @@
 import "./App.css";
-import { Input } from "./components/index";
+import AnimatedBackground from "./components/common/AnimatedBackground";
+// import { Input } from "./components/index";
 import Topbar from "./components/common/Topbar";
+import Login from "./views/Login";
+// import { Route, Routes } from "react-router-dom";
+// import Register from "./views/Register";
 
 function App() {
   return (
     <>
+    <AnimatedBackground/>
       <Topbar />
-      <Input />
+      {/* <Routes>
+        <Route></Route>
+        <Input />
+      </Routes> */}
+      {/* <Register/> */}
+      <Login/>
     </>
   );
 }
