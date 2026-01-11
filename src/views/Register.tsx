@@ -1,5 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { motion, type Variants } from "framer-motion";
+import { registerUser } from "../api/auth";
+import { Link, useNavigate } from "react-router-dom";
 
 interface RegisterFormData {
   name: string;
@@ -27,6 +29,7 @@ const itemVariants: Variants = {
 };
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<RegisterFormData>({
     name: "",
     email: "",
@@ -44,10 +47,21 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setLoading(true);
-
     console.log(formData);
-
-    setLoading(false);
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+    };
+    try {
+      await registerUser(payload);
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+      alert("Registration failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -148,9 +162,11 @@ const Register: React.FC = () => {
           className="mt-6 text-center text-sm text-gray-500"
         >
           Already have an account?{" "}
-          <span className="cursor-pointer font-medium text-indigo-600 hover:underline">
-            Login
-          </span>
+          <Link to={"/login"}>
+            <span className="cursor-pointer font-medium text-indigo-600 hover:underline">
+              Login
+            </span>
+          </Link>
         </motion.p>
       </motion.div>
     </div>

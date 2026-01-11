@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { motion, type Variants } from "framer-motion";
+import { loginUser } from "../api/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/useAuth";
 
 interface LoginTypes {
   email: string;
@@ -35,11 +38,32 @@ const itemsVariants: Variants = {
 };
 
 const Login = () => {
+  const navigate = useNavigate();
   const [showpassword, setShowPassword] = useState<boolean>(false);
   const [formData, setFormData] = useState<LoginTypes>({
     email: "",
     password: "",
   });
+
+  const {setUser} = useAuth()
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const payload = {
+        email: formData.email,
+        password: formData.password,
+      };
+      // console.log(payload);
+     const res =  await loginUser(payload);
+      setUser(res.data.user);
+      navigate("/urlShortner");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <div className="flex min-h-screen items-center justify-center px-4">
@@ -61,7 +85,7 @@ const Login = () => {
           >
             Shorten and manage your URLs securely
           </motion.p>
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <motion.div variants={containerVariants}>
               <label
                 htmlFor="email"
@@ -119,6 +143,17 @@ const Login = () => {
               Submit
             </motion.button>
           </form>
+          <motion.p
+            variants={itemsVariants}
+            className="mt-6 text-center text-sm text-gray-500"
+          >
+            Don't have an account?{" "}
+            <Link to="/register">
+            <span className="cursor-pointer font-medium text-indigo-600 hover:underline">
+              Register
+            </span>
+            </Link>
+          </motion.p>
         </motion.div>
       </div>
     </>
